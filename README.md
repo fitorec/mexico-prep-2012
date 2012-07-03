@@ -12,9 +12,9 @@ La relación de estados y secciones está en el archivo secciones.txt, la primer
 
 Las actas no están disponibles en un formato de acceso amistoso, sin embargo se puede generar una lista de actas mediante [Web Scrapping](http://en.wikipedia.org/wiki/Web_scraping) en el sitio del PREP:
 
-$ cd scripts
-$ chmod +x actas.sh
-$ ./actas.sh
+    $ cd scripts
+    $ chmod +x actas.sh
+    $ ./actas.sh
 
 Las actas se guardarán en etc/actas.txt
 
