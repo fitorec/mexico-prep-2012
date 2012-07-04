@@ -4,13 +4,13 @@ Esta información es pública y ha sido puesta para análisis en el sitio del [P
 
 Este repositorio no tiene relación con el IFE, por lo tanto no es oficial y no debe asumirse como tal, únicamente sirve para facilitar la consulta de los datos por terceros.
 
-Si tienes dudas de como utilizar o leer estas bases de datos, recomendamos consultar la [versión navegable](http://log.hckr.org/elecciones/prep/2012).
-
 ### ¿Cómo puedo obtener una copia?
 
-Los datos pueden ser copiados mediante [git](http://git-scm.com), pero también están disponibles en formato [zip](https://github.com/xiam/mexico-prep-2012/zipball/master)
+Los datos pueden ser copiados libremente mediante [git](http://git-scm.com), pero también están disponibles en formato [zip](https://github.com/xiam/mexico-prep-2012/zipball/master).
 
 Existen varios formatos para la lectura, desde CSV, SQL hasta OpenOffice y Excel. Estos archivos están en el directorio ``dumps``.
+
+Si tienes dudas o dificultades para analizar bases de datos, recomendamos consultar la [versión navegable](http://log.hckr.org/elecciones/prep/2012).
 
 ### Mensaje "Error: blob is too big"
 
@@ -18,7 +18,7 @@ En este caso sólo baja el paquete [zip](https://github.com/xiam/mexico-prep-201
 
 ### Relación de estados y secciones
 
-La relación de estados y secciones está en el archivo secciones.txt, la primer columna es el estado y la segunda el número de sección.
+La relación de estados y secciones está en el archivo ``secciones.txt``, la primer columna es el estado y la segunda el número de sección.
 
 ### Para obtener una lista de actas
 
@@ -28,7 +28,5 @@ Las actas no están disponibles en un formato de acceso amistoso, sin embargo se
     $ chmod +x actas.sh
     $ ./actas.sh
 
-Las actas se guardarán en etc/actas.txt
-
-Se recomienda no realizar scraping el sitio del PREP de forma agresiva, una vez se complete una relación de estados y secciones con actas se publicará en etc/actas.txt
+El último resultado de este script quedó copiado en ``etc/actas.txt`` y se prefiere utilizar éste listado en vez del scraping agresivo.
 
