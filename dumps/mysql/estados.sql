@@ -1,10 +1,4 @@
 --
--- Base de datos: `ife`
---
-
--- --------------------------------------------------------
-
---
 -- Estructura de tabla para la tabla `estados`
 --
 
@@ -50,7 +44,3 @@ INSERT INTO `estados` (`ID`, `NOMBRE`) VALUES
 (30, 'VERACRUZ'),
 (31, 'YUCATÁN'),
 (32, 'ZACATECAS');
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
