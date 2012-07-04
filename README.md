@@ -4,6 +4,8 @@ Esta información es pública y ha sido puesta para análisis en el sitio del [P
 
 Este repositorio no tiene relación con el IFE, por lo tanto no es oficial y no debe asumirse como tal, únicamente sirve para facilitar la consulta de los datos por terceros.
 
+Si tienes dudas de como utilizar o leer estas bases de datos, recomendamos consultar la [versión navegable](http://log.hckr.org/elecciones/prep/2012).
+
 ### ¿Cómo puedo obtener una copia?
 
 Los datos pueden ser copiados mediante [git](http://git-scm.com), pero también están disponibles en formato [zip](https://github.com/xiam/mexico-prep-2012/zipball/master)
