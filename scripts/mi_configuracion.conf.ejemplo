@@ -1,5 +1,5 @@
-	# Configuracion de ejemplo, agrega aqui los datos de tu configuracion de la
-	# base de datos a trabajar.
-	MYSQL_USER=prep
-	MYSQL_PASSWORD=prep
-	MYSQL_BD=prep
+# Configuracion de ejemplo, agrega aqui los datos de tu configuracion de la
+# base de datos a trabajar.
+MYSQL_USER=prep
+MYSQL_PASSWORD=prep
+MYSQL_BD=prep
