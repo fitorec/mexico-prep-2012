@@ -8,7 +8,7 @@ Este repositorio no tiene relación con el IFE, por lo tanto no es oficial y no 
 
 Los datos pueden ser copiados mediante [git](http://git-scm.com), pero también están disponibles en formato [zip](https://github.com/xiam/mexico-prep-2012/zipball/master)
 
-Existen varios formatos para la lectura, desde CSV, SQL hasta OpenOffice y Excel. Estos archivos están en el directorio ''dumps''.
+Existen varios formatos para la lectura, desde CSV, SQL hasta OpenOffice y Excel. Estos archivos están en el directorio ``dumps``.
 
 ### Relación de estados y secciones
 
