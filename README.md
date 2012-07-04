@@ -10,6 +10,10 @@ Los datos pueden ser copiados mediante [git](http://git-scm.com), pero también 
 
 Existen varios formatos para la lectura, desde CSV, SQL hasta OpenOffice y Excel. Estos archivos están en el directorio ``dumps``.
 
+### Mensaje "Error: blob is too big"
+
+En este caso sólo baja el paquete [zip](https://github.com/xiam/mexico-prep-2012/zipball/master) y busca ahí lo que deseas obtener.
+
 ### Relación de estados y secciones
 
 La relación de estados y secciones está en el archivo secciones.txt, la primer columna es el estado y la segunda el número de sección.
