@@ -19,3 +19,7 @@ Las actas no están disponibles en un formato de acceso amistoso, sin embargo se
 Las actas se guardarán en etc/actas.txt
 
 Se recomienda no realizar scraping el sitio del PREP de forma agresiva, una vez se complete una relación de estados y secciones con actas se publicará en etc/actas.txt
+
+### ¿Cómo puedo obtener una copia?
+
+Los datos pueden ser copiados mediante git, pero también están disponibles en [paquete zip](https://github.com/xiam/mexico-prep-2012/zipball/master)
