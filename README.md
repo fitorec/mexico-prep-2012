@@ -1,8 +1,18 @@
-## ELECCIONES MÉXICO 2012
+## BASE DE DATOS ELECCIONES MÉXICO 2012
 
 Esta información es pública y ha sido puesta para análisis en el sitio del [PREP](http://prep2012.ife.org.mx/prep/NACIONAL/PresidenteNacionalVPC.html).
 
 Este repositorio no tiene relación con el IFE, por lo tanto no es oficial y no debe asumirse como tal, únicamente sirve para facilitar la consulta de los datos por terceros.
+
+### ¿Cómo puedo obtener una copia?
+
+Los datos pueden ser copiados mediante [git](http://git-scm.com), pero también están disponibles en formato [zip](https://github.com/xiam/mexico-prep-2012/zipball/master)
+
+Existen varios formatos para la lectura, desde CSV, SQL hasta OpenOffice y Excel. Estos archivos están en el directorio ``dumps``.
+
+### Mensaje "Error: blob is too big"
+
+En este caso sólo baja el paquete [zip](https://github.com/xiam/mexico-prep-2012/zipball/master) y busca ahí lo que deseas obtener.
 
 ### Relación de estados y secciones
 
@@ -20,6 +30,3 @@ Las actas se guardarán en etc/actas.txt
 
 Se recomienda no realizar scraping el sitio del PREP de forma agresiva, una vez se complete una relación de estados y secciones con actas se publicará en etc/actas.txt
 
-### ¿Cómo puedo obtener una copia?
-
-Los datos pueden ser copiados mediante git, pero también están disponibles en [paquete zip](https://github.com/xiam/mexico-prep-2012/zipball/master)
