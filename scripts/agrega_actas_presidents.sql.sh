@@ -13,6 +13,7 @@ end='\e[0m'
 
 REPO_PATH=$(readlink -f "$0" | xargs dirname | xargs dirname )
 FILE_CONFIG=$(echo ${REPO_PATH}/scripts/mi_configuracion.conf)
+FILE_SQL_DST=$(echo ${REPO_PATH}/dumps/mysql/agrega_casillas_presidential.ql)
 
 #Revisando que exista el archivo de configuracion.
 if [ ! -f "${FILE_CONFIG}" ]
@@ -38,8 +39,7 @@ fi
 #########################################################################
 # Carga un valor del archivo de configuración
 #########################################################################
-function configuracion()
-{
+function configuracion() {
 	echo `cat "${FILE_CONFIG}" | grep -Ev '^\s*#' | grep -E "\s*${1}=" | sed "s/${1}=//"`
 }
 
@@ -48,8 +48,7 @@ MYSQL_USER=`configuracion MYSQL_USER`
 MYSQL_PASSWORD=`configuracion MYSQL_PASSWORD`
 MYSQL_BD=`configuracion MYSQL_BD`
 
-function nombre_estado()
-{
+function nombre_estado() {
 echo -e $(mysql --user="${MYSQL_USER}" --password="${MYSQL_PASSWORD}" ${MYSQL_BD} << EOFMYSQL
 	SELECT nombre FROM estados WHERE ID=$1;
 EOFMYSQL
@@ -57,31 +56,63 @@ EOFMYSQL
 }
 
 ###########################################################################
+# Inicia el archivo a usar.
+###########################################################################
+function iniciaFileDst() {
+	echo '-- Archivo autogenerado' > "${FILE_SQL_DST}";
+	echo "-- Ultima actulizacion: `date`" >> "${FILE_SQL_DST}";
+
+	echo '' >> "${FILE_SQL_DST}";
+	echo '--' >> "${FILE_SQL_DST}";
+	echo '-- Agregando el campo ACTAS a la tabla presidential' >> "${FILE_SQL_DST}";
+	echo '--' >> "${FILE_SQL_DST}";
+	echo 'ALTER TABLE presidential ADD ACTAS TEXT;' > ${FILE_SQL_DST};
+
+	echo '' >> "${FILE_SQL_DST}";
+	echo '--' >> "${FILE_SQL_DST}";
+	echo '-- Comienzo del volcado de actas' >> "${FILE_SQL_DST}";
+	echo '--' >> "${FILE_SQL_DST}";
+}
+iniciaFileDst
+
+###########################################################################
 # Carga las tablas de la BD
 ###########################################################################
-function loadSQL(){
+function carga_nuevo_esquema() {
+	echo -e "${cyan}Actualizando nuevo esquema de datos${end}"
+	#Primero borramos todas las tablas existentes en la base de datos
+	for t in `mysql --user="${MYSQL_USER}" --password="${MYSQL_PASSWORD}" "${MYSQL_BD}" -BNe "SHOW TABLES"`
+	do
+		echo -ne "${red}Borrando${end} -> ${MYSQL_BD}${yellow}.${end}${light}${t}${end}\r"
+		mysql --user="${MYSQL_USER}" --password="${MYSQL_PASSWORD}" "${MYSQL_BD}" -e "drop table ${t}"
+	done
+	echo "--------------------------------------------------------------------"
+
 	#Cargamos la base de datos para presidentes.
-	mysql --user="${MYSQL_USER}" --password="${MYSQL_PASSWORD}" ${MYSQL_BD} < \
+	echo -e "Cargando tabla prep presidenciales: ${yellow}/dumps/mysql/presidential.sql${end}";
+	mysql --user="${MYSQL_USER}" --password="${MYSQL_PASSWORD}" "${MYSQL_BD}" < \
 	"${REPO_PATH}/dumps/mysql/presidential.sql"
+
 	#cargamos la tabla donde vienen los nombres de estados.
-	mysql --user="${MYSQL_USER}" --password="${MYSQL_PASSWORD}" ${MYSQL_BD} < \
+	echo -e "Cargando relación de estados: ${yellow}/dumps/mysql/estados.sql${end}";
+	mysql --user="${MYSQL_USER}" --password="${MYSQL_PASSWORD}" "${MYSQL_BD}" < \
 	"${REPO_PATH}/dumps/mysql/estados.sql"
-	#A presidential le agregamos el campo ACTAS donde posteriormente trabajaremos.
-	mysql --user="${MYSQL_USER}" --password="${MYSQL_PASSWORD}" ${MYSQL_BD} << EOFMYSQL
-	ALTER TABLE presidential ADD ACTAS TEXT;
-EOFMYSQL
+
+	echo -e "Actualizando tabla prep presidenciales: ${yellow}/dumps/mysql/agrega_casillas_presidential.ql${end}";
+	#Cargamos el archivo que modifica la tabla presidentials
+	mysql --user="${MYSQL_USER}" --password="${MYSQL_PASSWORD}" "${MYSQL_BD}" < \
+	"${FILE_SQL_DST}"
 }
-loadSQL
 
 ###########################################################################
 # Cargamos las actas
 ###########################################################################
-function cargar_actas() {
+function relacion_actas_presidentials() {
 	ESTADO_ANTERIOR='0'
 	ESTADO_NOMBRE=''
 	SECCION_ANTERIOR='0'
 	echo -e "${cyan}Insertando las actas, este proceso puede tardar mucho, por favor sea paciente${end}"
-	for LINEA in $(cat ${REPO_PATH}/etc/actas.txt | sed 's/ /=/g')
+	for LINEA in $(cat ${REPO_PATH}/etc/actas.txt | sort -n | sed 's/ /=/g')
 	do
 		ESTADO=$(echo $LINEA | cut -d= -f1)
 		SECCION=$(echo $LINEA | cut -d= -f2)
@@ -90,18 +121,21 @@ function cargar_actas() {
 		then
 			SECCION_ANTERIOR=$(echo $SECCION);
 			if [ "${ESTADO_ANTERIOR}" -ne "${ESTADO}" ]
-			then 
+			then
 				ESTADO_NOMBRE=`nombre_estado ${ESTADO}`
 				ESTADO_ANTERIOR=$(echo $ESTADO);
 				echo -e "ESTADO: ${light}${ESTADO_NOMBRE}${end}\t\t";
 			fi
 			echo -ne "SECCIÓN: ${yellow}$SECCION${end}\r";
 		fi;
-	mysql --user="${MYSQL_USER}" --password="${MYSQL_PASSWORD}" ${MYSQL_BD} << EOFMYSQL
-		UPDATE presidential SET ACTAS = CONCAT(ACTAS,"$HASH",'\n') WHERE ESTADO=$ESTADO AND SECCION=$SECCION;
-EOFMYSQL
+	echo "UPDATE presidential SET ACTAS=CONCAT(ACTAS,'$HASH','\n') WHERE ESTADO=$ESTADO AND SECCION=$SECCION;" >> \
+"${FILE_SQL_DST}";
 	done;
 	echo -e "${yellow}El script ha finalizado!${end}"
 }
 
-cargar_actas
+#Generamos la relación entre presidentials y actas.
+relacion_actas_presidentials
+
+#Actualiza el esquema de la base de datos
+#carga_nuevo_esquema
