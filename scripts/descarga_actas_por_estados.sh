@@ -13,7 +13,7 @@ yellow="\e[0;33m"
 white="\e[0;37m"
 end='\e[0m'
 
-#Variables a utilizar
+#Variables a utilizarprep/introduccion.html
 URL="http://www.difusorprep-elecciones2012.unam.mx/prep/DetalleCasillas?"
 REPO_PATH=$(readlink -f "$0" | xargs dirname | xargs dirname )
 AGENT="Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; FREE; .NET CLR 1.1.4322)"
@@ -30,13 +30,15 @@ SLUG_EDO=(null 	'aguascalientes' 'baja_california' 'baja_california_sur' 'campec
 					'san_luis_potosi' "sinaloa" 'sonora' "tabasco" 'tamaulipas' "tlaxcala"
 					'veracruz' "yucatan" 'zacatecas')
 DEST_PATH=`echo ${REPO_PATH}/etc/respaldos_consultas`
+LOG_FILE=''
+N_ARCHIVOS=0
 ###########################################################################
 # Revisa si la variable EDO pertenece a un estado valido, esto lo hace re-
 # visando si pertenece al intervalo [1-32]. Devuelve true si es así y
 # false en caso contrario.
 ###########################################################################
 function es_edo_vadido() {
-	if [ "${EDO}" -gt 0 ] && [ "${EDO}" -lt 33 ]
+	if [ "${ESTADO}" -gt 0 ] && [ "${ESTADO}" -lt 33 ]
 	then
 		echo "true"
 	else
@@ -64,9 +66,9 @@ function menu() {
 				band=0
 			fi
 		done #fin ciclo for
-		read EDO
+		read ESTADO
 	done #fin del while
-	echo -e "${light}Estado seleccionado:${end} ${yellow}${ESTADOS[EDO]}${end}"
+	echo -e "${light}Estado seleccionado:${end} ${yellow}${ESTADOS[ESTADO]}${end}"
 }
 
 ###########################################################################
@@ -74,7 +76,8 @@ function menu() {
 # asta que el usuario seleccione un estado valido.
 ###########################################################################
 function descargar_actas() {
-	DEST_PATH=$(echo ${DEST_PATH}/${SLUG_EDO[EDO]})
+	DEST_PATH=$(echo ${DEST_PATH}/${SLUG_EDO[ESTADO]})
+	LOG_FILE=$(echo "${DEST_PATH}/log.txt")
 	echo -e "${light}Destino:${end} ${yellow}${DEST_PATH}${end}"
 	#si la carpeta destino no existe la creamos.
 	if [ ! -e "${DEST_PATH}" ]
@@ -82,31 +85,39 @@ function descargar_actas() {
 		echo -e "${light}Destino inexistente, creando el destino${end}"
 		mkdir -p "${DEST_PATH}"
 	fi
-	echo -ne "${cyan}obteniendo secciones...${end}\r";
-	for line in $(cat ${REPO_PATH}/secciones.txt  | grep -E "^${EDO}\s" | sed 's/ /_/' )
+	#Creando el archivo de secciones del estado.
+	if [ ! -f "${DEST_PATH}/secciones.txt" ] || [ ! -f "$LOG_FILE" ]
+	then
+			echo -e "${cyan}Obteniendo secciones del estado y generando bitacola${end}\r"
+			cat "${REPO_PATH}/secciones.txt"  | grep -E "^${ESTADO}\s" |
+				grep -Eo "[0-9]+$" | sort -n > "${DEST_PATH}/secciones.txt"
+			cp "${DEST_PATH}/secciones.txt" "$LOG_FILE"
+	fi
+	#Descargando sólo los archivos que no estan comentados en la bitacola
+	for SECCION in $( cat "$LOG_FILE" | grep -E "^[0-9]")
 	do
-		ESTADO=$(echo ${line} | cut -d_ -f1)
-		SECCION=$(echo ${line} | cut -d_ -f2)
 		FILE_DST=$(echo seccion_${SECCION}.html)
-		#Solo debe descargar el archivo si este no existe.
-		if [ ! -f "${FILE_DST}" ]
+		echo -ne "Descargando: ${yellow}${FILE_DST}${end}\r";
+		wget -O "${DEST_PATH}/${FILE_DST}" --user-agent="${AGENT}" -Nkq \
+		"${URL}idEdo=${ESTADO}&seccion=${SECCION}&votoExt=1"
+		#Una vez descargado el archivo comentamos la linea en la bitacola
+		if [ $? -eq 0 ] && [ -f "${DEST_PATH}/${FILE_DST}" ]
 		then
-			echo -ne "Descargando: ${yellow}${FILE_DST}${end}\r";
-			wget -O "${DEST_PATH}/${FILE_DST}" --user-agent="${AGENT}" -q \
-			"${URL}idEdo=${ESTADO}&seccion=${SECCION}&votoExt=1"
+			sed -i "s/^${SECCION}/#${SECCION}/" "$LOG_FILE"
+			#incrementamos el numero de archvios descargados.
+			N_ARCHIVOS=`expr $N_ARCHIVOS + 1`
 		fi
 	done
-	echo -ne "${cyan}obteniendo secciones...${end}\r";
 }
 
 #El estado es el argumento de entrada
-EDO=0
+ESTADO=0
 if [ $# -gt 0 ]
 then
-	EDO=$1
+	ESTADO=$1
 	#Opción especial no seleccionable desde el menú.
 	#Descarga en orden todos los estados.
-	if [ ${EDO} == 'all' ]
+	if [ ${ESTADO} == 'all' ]
 	then
 		echo -e "${light}Es usted un chingón pretende descargar todo ':¬P!${end}"
 		echo "-----------------------------------------------------------------------"
@@ -121,3 +132,5 @@ fi
 menu
 #Finalmente descargamos el menu
 descargar_actas
+#finalmente informamos el número de archivos descargados
+echo -e "Archivos descargados: ${yellow}${N_ARCHIVOS}${end}"
