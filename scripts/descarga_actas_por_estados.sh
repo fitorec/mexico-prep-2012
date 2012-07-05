@@ -94,7 +94,7 @@ function descargar_actas() {
 				grep -Eo "[0-9]+$" | sort -n > "${DEST_PATH}/secciones.txt"
 			cp "${DEST_PATH}/secciones.txt" "$LOG_FILE"
 	fi
-	#Descargando sólo los archivos que no estan comentados en la bitacola
+	#Descargando sólo los archivos que estan en la bitacola
 	for SECCION in $( cat "$LOG_FILE")
 	do
 		FILE_DST=$(echo seccion_${SECCION}.html)
