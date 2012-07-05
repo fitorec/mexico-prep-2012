@@ -14,6 +14,7 @@ white="\e[0;37m"
 end='\e[0m'
 
 #Variables a utilizarprep/introduccion.html
+STARTTIME=$(date +%s )
 URL="http://www.difusorprep-elecciones2012.unam.mx/prep/DetalleCasillas?"
 REPO_PATH=$(readlink -f "$0" | xargs dirname | xargs dirname )
 AGENT="Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; FREE; .NET CLR 1.1.4322)"
@@ -94,7 +95,7 @@ function descargar_actas() {
 			cp "${DEST_PATH}/secciones.txt" "$LOG_FILE"
 	fi
 	#Descargando sólo los archivos que no estan comentados en la bitacola
-	for SECCION in $( cat "$LOG_FILE" | grep -E "^[0-9]")
+	for SECCION in $( cat "$LOG_FILE")
 	do
 		FILE_DST=$(echo seccion_${SECCION}.html)
 		echo -ne "Descargando: ${yellow}${FILE_DST}${end}\r";
@@ -103,7 +104,8 @@ function descargar_actas() {
 		#Una vez descargado el archivo comentamos la linea en la bitacola
 		if [ $? -eq 0 ] && [ -f "${DEST_PATH}/${FILE_DST}" ]
 		then
-			sed -i "s/^${SECCION}/#${SECCION}/" "$LOG_FILE"
+			#Eliminando la linea actual.
+			sed -i "/^${SECCION}$/d" "$LOG_FILE"
 			#incrementamos el numero de archvios descargados.
 			N_ARCHIVOS=`expr $N_ARCHIVOS + 1`
 		fi
@@ -132,5 +134,7 @@ fi
 menu
 #Finalmente descargamos el menu
 descargar_actas
-#finalmente informamos el número de archivos descargados
-echo -e "Archivos descargados: ${yellow}${N_ARCHIVOS}${end}"
+#Informamos el número de archivos descargados y el tiempo en ejecución
+echo -e "${light}Total de archivos descargados:${end} ${yellow}${N_ARCHIVOS} documentos HTML${end}"
+RUNTIME=$(expr `date +%s` - ${STARTTIME} )
+echo -e "${light}Tiempo de ejecución:${end} ${yellow}${RUNTIME} Segundos${end}"
