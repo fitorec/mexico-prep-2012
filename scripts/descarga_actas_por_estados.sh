@@ -98,7 +98,7 @@ function descargar_actas() {
 	do
 		FILE_DST=$(echo seccion_${SECCION}.html)
 		echo -ne "Descargando: ${yellow}${FILE_DST}${end}\r";
-		wget -O "${DEST_PATH}/${FILE_DST}" --user-agent="${AGENT}" -Nkq \
+		wget -O "${DEST_PATH}/${FILE_DST}" --user-agent="${AGENT}" -kq \
 		"${URL}idEdo=${ESTADO}&seccion=${SECCION}&votoExt=1"
 		#Una vez descargado el archivo comentamos la linea en la bitacola
 		if [ $? -eq 0 ] && [ -f "${DEST_PATH}/${FILE_DST}" ]
