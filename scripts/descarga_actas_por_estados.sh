@@ -18,16 +18,16 @@ URL="http://www.difusorprep-elecciones2012.unam.mx/prep/DetalleCasillas?"
 REPO_PATH=$(readlink -f "$0" | xargs dirname | xargs dirname )
 AGENT="Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; FREE; .NET CLR 1.1.4322)"
 ESTADOS=(null 'AGUASCALIENTES' 'BAJA CALIFORNIA' 'B. CALIFORNIA SUR' 'CAMPECHE'
-					"COAHUILA\t" 'COLIMA' "CHIAPAS\t" 'CHIHUAHUA' 'DISTRITO FEDERAL' "DURANGO\t"
-					'GUANAJUATO' 'GUERRERO' "HIDALGO\t" 'JALISCO' "MÉXICO\t" 'MICHOACÁN' "MORELOS\t"
-					'NAYARIT' 'NUEVO LEÓN' 'OAXACA' "PUEBLA\t" 'QUERÉTARO' 'QUINTANA ROO'
-					'SAN LUIS POTOSÍ' "SINALOA\t" 'SONORA' "TABASCO\t" 'TAMAULIPAS' "TLAXCALA\t"
-					'VERACRUZ' "YUCATÁN\t" 'ZACATECAS')
+	"COAHUILA\t" 'COLIMA' "CHIAPAS\t" 'CHIHUAHUA' 'DISTRITO FEDERAL' "DURANGO\t"
+	'GUANAJUATO' 'GUERRERO' "HIDALGO\t" 'JALISCO' "MÉXICO\t" 'MICHOACÁN' "MORELOS\t"
+	'NAYARIT' 'NUEVO LEÓN' 'OAXACA' "PUEBLA\t" 'QUERÉTARO' 'QUINTANA ROO'
+	'SAN LUIS POTOSÍ' "SINALOA\t" 'SONORA' "TABASCO\t" 'TAMAULIPAS' "TLAXCALA\t"
+	'VERACRUZ' "YUCATÁN\t" 'ZACATECAS')
 SLUG_EDO=(null 	'aguascalientes' 'baja_california' 'baja_california_sur' 'campeche'
-					"coahuila" 'colima' "chiapas" 'chihuahua' 'distrito_federal' "durango"
-					'guanajuato' 'guerrero' "hidalgo" 'jalisco' "mexico" 'michoacan' "morelos"
-					'nayarit' 'nuevo_leon' 'oaxaca' "puebla" 'queretaro' 'quintana_roo'
-					'san_luis_potosi' "sinaloa" 'sonora' "tabasco" 'tamaulipas' "tlaxcala"
+	"coahuila" 'colima' "chiapas" 'chihuahua' 'distrito_federal' "durango"
+	'guanajuato' 'guerrero' "hidalgo" 'jalisco' "mexico" 'michoacan' "morelos"
+	'nayarit' 'nuevo_leon' 'oaxaca' "puebla" 'queretaro' 'quintana_roo'
+	'san_luis_potosi' "sinaloa" 'sonora' "tabasco" 'tamaulipas' "tlaxcala"
 					'veracruz' "yucatan" 'zacatecas')
 DEST_PATH=`echo ${REPO_PATH}/etc/respaldos_consultas`
 LOG_FILE=''
